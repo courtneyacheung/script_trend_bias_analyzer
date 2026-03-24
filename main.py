@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, HttpUrl
 
 MODEL_ID = "gemini-3-flash-preview"
 
-app = FastAPI(title="Themes, Trends, and Bias API")
+app = FastAPI(title="Script trend and bias API")
 
 app.add_middleware(
     CORSMiddleware,
