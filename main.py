@@ -15,7 +15,7 @@ app = FastAPI(title="Themes, Trends, and Bias API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://courtneyacheung.github.io"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
