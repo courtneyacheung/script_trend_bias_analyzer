@@ -11,11 +11,11 @@ from pydantic import BaseModel, Field, HttpUrl
 
 MODEL_ID = "gemini-3-flash-preview"
 
-app = FastAPI(title="Script trend and bias API")
+app = FastAPI(title="Script trend and bias analyzer")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://courtneyacheung.github.io"],
+    allow_origins=["https://courtneyacheung.github.io", "https://nafeysa.github.io"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
