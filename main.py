@@ -214,7 +214,7 @@ For each theme:
 - Use the notes to interpret what the theme means in context.
 - Find ONE real, recent source (prefer last {days_back} days).
 - Keep relevance_blurb to 1–2 concrete sentences.
-- Provide a real source_title and direct source_url.
+- - Provide a real source_title and the exact canonical source_url from the search result. Do not guess, construct, normalize, or shorten the URL. Copy it exactly as shown. If the title matches but the URL is uncertain, search again until the URL is exact.
 - Include published_date if available.
 - evidence_note should clearly explain what the source shows.
 
@@ -230,7 +230,9 @@ Notes:
         config=types.GenerateContentConfig(
             temperature=0,
             top_p=1,
-            # thinking_config=types.ThinkingConfig(thinking_level="minimal"),
+            thinking_config=types.ThinkingConfig(thinking_level="minimal"),
+            # thinking_config=types.ThinkingConfig(budget_tokens=0),
+            # thinking_config=types.ThinkingConfig(thinking_level="low"),
             tools=[types.Tool(google_search=types.GoogleSearch())],
             response_mime_type="application/json",
             response_json_schema=ThemeTrendResponse.model_json_schema(),
@@ -248,7 +250,9 @@ def evaluate_script_bias(script: str) -> Dict[str, Any]:
         system_instruction=SYSTEM_PROMPT,
         temperature=0,
         top_p=1,
-        # thinking_config=types.ThinkingConfig(thinking_level="minimal"),
+        thinking_config=types.ThinkingConfig(thinking_level="minimal"),
+        # thinking_config=types.ThinkingConfig(budget_tokens=0),
+        # thinking_config=types.ThinkingConfig(thinking_level="low"),
         response_mime_type="application/json",
         response_json_schema=RESPONSE_SCHEMA,
     )
@@ -302,3 +306,39 @@ def bias_score_endpoint(req: BiasScoreRequest):
         return evaluate_script_bias(req.script)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+
+if __name__ == "__main__":
+    # Simple local tests (no FastAPI needed)
+
+    # ---- TEST THEMES ----
+    test_notes = """
+    In a dimly lit, Los Angeles workshop nestled in the Ayala Mountains, 
+    Coward Cheol sat amidst the remnants of his shattered life, surrounded by 
+    the eerie glow of VR headsets and the faint hum of machinery, 
+    as he stared at the Uakari Mask perched on his workbench. 
+    Meanwhile, in Brooklyn, Frias, a Maya-Chacaby elder, communed with the 
+    spirits of his ancestors through the sacred rituals of Biskaabiiyaang, 
+    unaware that Cheol's transformation into a tin kettle robot was imminent, 
+    like the rustling of leaves on the Las Awichas forest floor.
+    """
+
+    try:
+        print("\n=== TEST: THEMES & TRENDS ===\n")
+        themes = get_themes_and_trends(test_notes)
+        print(json.dumps(themes, indent=2))
+    except Exception as e:
+        print("Themes error:", e)
+
+    # ---- TEST BIAS ----
+    test_script = """
+    MAYA listens while DANNY explains the plan. Danny makes decisions and leads the group. The camera lingers on Maya's appearance.
+    """
+
+    try:
+        print("\n=== TEST: BIAS SCORE ===\n")
+        bias = evaluate_script_bias(test_script)
+        print(json.dumps(bias, indent=2))
+    except Exception as e:
+        print("Bias error:", e)
