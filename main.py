@@ -15,7 +15,8 @@ app = FastAPI(title="Script trend and bias analyzer")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://courtneyacheung.github.io", "https://nafeysa.github.io"],
+    # allow_origins=["https://courtneyacheung.github.io", "https://nafeysa.github.io"],
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
